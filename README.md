@@ -44,7 +44,7 @@ kind: CronJob
 metadata:
   name: mariadb-backup-cronjob
 spec:
-  schedule: "* 20 * * *"
+  schedule: "0 20 * * *"
   jobTemplate:
     spec:
       template:
