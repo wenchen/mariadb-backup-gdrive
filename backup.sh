@@ -1,12 +1,12 @@
 #!/bin/sh
 
-MYSQL_OPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD"
+MYSQL_OPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD --skip-ssl"
 DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
 TMP_FOLDER="/tmp/$DUMP_START_TIME"
 GDRIVE_FOLDER="$RCLONE_TARGET/$DUMP_START_TIME"
 
 if [ "${MYSQLDUMP_DATABASE}" = "all" ]; then
-  DATABASES=`mysql $MYSQL_OPTS -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|mysql|sys|innodb)"`
+  DATABASES=`mariadb $MYSQL_OPTS -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|mysql|sys|innodb)"`
 else
   DATABASES=$(echo $MYSQLDUMP_DATABASE | tr ";" "\n")
 fi
@@ -18,7 +18,7 @@ for DB in $DATABASES; do
 
   DUMP_FILE="${TMP_FOLDER}/${DB}.sql.gz"
 
-  mysqldump $MYSQL_OPTS $MYSQLDUMP_OPTIONS $DB | gzip > $DUMP_FILE
+  mariadb-dump $MYSQL_OPTS $MYSQLDUMP_OPTIONS $DB | gzip > $DUMP_FILE
 done
 
 rclone mkdir "$GDRIVE_FOLDER"

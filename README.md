@@ -29,6 +29,7 @@ docker run \
   -e MYSQL_HOST=host.docker.internal \
   -e RCLONE_TARGET=gdrive:/Backup/Test \
   -v $(pwd)/rclone:/config/rclone/ \
+  --add-host=host.docker.internal:host-gateway \
   wenchenx/mariadb-backup-gdrive
 ```
 
